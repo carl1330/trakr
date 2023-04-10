@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
-import {FaRegPlusSquare, FaChartBar, FaUser, FaSignOutAlt, FaSignInAlt} from "react-icons/fa"
+import {FaRegPlusSquare, FaChartBar, FaUser, FaSignOutAlt, FaSignInAlt, FaCheck, FaPen} from "react-icons/fa"
 import Link from "next/link";
 import { CircularProgress } from "@mui/material";
 import { Menu } from "@headlessui/react";
@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Fragment } from "react";
 import { Transition } from "@headlessui/react";
 import { api } from "~/utils/api";
+import { MdDelete } from "react-icons/md";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -24,7 +25,7 @@ const Home: NextPage = () => {
       </Head>
       <main className="mx-96">
         <Navbar />
-        {sessionData ? <HabitFeed /> : <div>You should sign in</div>}
+        {sessionData ? <HabitFeed /> : ""}
       </main>
     </>
   );
@@ -107,16 +108,43 @@ const HabitFeed: React.FC = () => {
   }
   
   const Habit = ({name, description}: HabitProps) => {
+    var boxes = []
+    for (var i = 0; i < 365; i++) {
+      boxes[i] = <div className="w-[12px] h-[12px] bg-zinc-200 hover:bg-zinc-400 hover:cursor-pointer overflow-hidden" />
+    }
+
     return (
-      <div>
-        <p>{name}</p>
-        <p>{description}</p>
+      <div className="flex flex-col shadow-md">
+        <div className="flex flex-col gap-2 h-1/2 bg-violet-500 p-2 rounded-t">
+          <div className="flex flex-row justify-between">
+            <div>
+              <p className="text-xl font-bold text-violet-50">{name}</p>
+              <p className="text-violet-300">{description}</p>
+            </div>
+            <button className="self-start text-violet-900 hover:bg-violet-600 p-2 rounded">
+              <MdDelete />
+            </button>
+          </div>
+          <div className="text-violet-50">
+            <button className="p-2 rounded hover:bg-violet-600 transition-all">
+              <FaCheck />
+            </button>
+            <button className="p-2 rounded hover:bg-violet-600 transition-all">
+              <FaPen />
+            </button>
+          </div>
+        </div>
+        <div className="p-2 rounded-b">
+          <div className="grid gap-[4px] grid-rows-6 grid-flow-col">
+            {boxes}
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center gap-4">
         {habits?.map((habit) => (
           <Habit key={habit.id} name={habit.name} description={habit.description}/>
         ))}
