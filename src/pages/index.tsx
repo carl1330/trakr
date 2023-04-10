@@ -118,7 +118,7 @@ const HabitFeed: React.FC = () => {
   return (
     <div className="flex flex-col justify-center items-center">
         {habits?.map((habit) => (
-          <Habit name={habit.name} description={habit.description}/>
+          <Habit key={habit.id} name={habit.name} description={habit.description}/>
         ))}
     </div>
   )
