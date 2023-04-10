@@ -37,5 +37,14 @@ export const habitRouter = createTRPCRouter({
                 userId: ctx.session.user.id
             }
         })
-    })
+    }),
+    deleteHabit: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ctx, input}) => {
+        return await ctx.prisma.habit.delete({
+            where: {
+                id: input,
+            },
+        })
+    }),
 });
