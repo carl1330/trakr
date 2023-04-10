@@ -69,4 +69,28 @@ export const habitRouter = createTRPCRouter({
             },
         })
     }),
+    uncompleteHabit: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ctx, input}) => {
+        const completedDates = await ctx.prisma.habit.findUnique({
+            select: {
+                completedDates: true
+            },
+            where: {
+                id: input,
+            },
+        })
+        const updatedDates = completedDates?.completedDates.filter((date) => {
+            return date !== new Date().toISOString().substring(0,10)
+        })
+        
+        return await ctx.prisma.habit.update({
+            data: {
+                completedDates: updatedDates
+            },
+            where: {
+                id: input,
+            },
+        })
+    }),
 });

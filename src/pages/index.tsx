@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
-import {FaRegPlusSquare, FaChartBar, FaUser, FaSignOutAlt, FaSignInAlt, FaCheck, FaPen} from "react-icons/fa"
+import {FaRegPlusSquare, FaChartBar, FaUser, FaSignOutAlt, FaSignInAlt, FaCheck, FaPen, FaUndoAlt} from "react-icons/fa"
 import Link from "next/link";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { Menu } from "@headlessui/react";
@@ -104,6 +104,7 @@ const HabitFeed: React.FC = () => {
 
   type HabitFull = RouterOutputs["habit"]["getHabits"][0]
   const Habit = (props: {habit: HabitFull}) => {
+    let habitCompleted = false;
     const ctx = api.useContext();
     const { mutate: deleteHabit, isLoading: deleteLoading } = api.habit.deleteHabit.useMutation({
       onSuccess: () => {
@@ -115,9 +116,14 @@ const HabitFeed: React.FC = () => {
         void ctx.habit.getHabits.invalidate();
       },
     });
+    const {mutate: uncompleteHabit,  isLoading: uncompleteHabitLoading} = api.habit.uncompleteHabit.useMutation({
+      onSuccess: () => {
+        void ctx.habit.getHabits.invalidate();
+      },
+    })
 
     const HabitBox = (boxdate: {date: Date}) => {
-      function isInArray(value: String, array: String[]) {
+      function isInArray(value: string, array: string[]) {
         return !!array.includes(value)
       }
 
@@ -156,9 +162,14 @@ const HabitFeed: React.FC = () => {
             </button>        
           </div>
           <div className="text-violet-50 flex flex-row gap-6">
+            { !habitCompleted ?
             <button onClick={() => completeHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
               {!completeHabitLoading ? <FaCheck /> : <CircularProgress size={20} color="secondary"/>}
+            </button> :
+            <button onClick={() => uncompleteHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
+              {!uncompleteHabitLoading ? <FaUndoAlt /> : <CircularProgress size={20} color="secondary"/>}
             </button>
+            }
             <button className="w-10 h-10 rounded flex justify-center items-center hover:bg-violet-600 transition-all">
               <FaPen />
             </button>
