@@ -102,13 +102,6 @@ const HabitFeed: React.FC = () => {
       </div>
     )
 
-  interface HabitProps {
-    name: string;
-    description: string;
-    id: string;
-  }
-
-
   type HabitFull = RouterOutputs["habit"]["getHabits"][0]
   const Habit = (props: {habit: HabitFull}) => {
     const ctx = api.useContext();
@@ -120,7 +113,7 @@ const HabitFeed: React.FC = () => {
     const boxes = []
     const habitStartDate = new Date(props.habit.createdAt);
     for (let i = 0; i < 365; i++) {
-      var boxdate = new Date(habitStartDate.getTime() + (24 * 60 * 60 * 1000) * i).toISOString().substring(0,10)
+      let boxdate = new Date(habitStartDate.getTime() + (24 * 60 * 60 * 1000) * i).toISOString().substring(0,10)
       boxes[i] = (
         <Tooltip title={boxdate} disableInteractive>
           <div className="w-[12px] h-[12px] bg-zinc-200 hover:bg-zinc-400 hover:cursor-pointer overflow-hidden" />
