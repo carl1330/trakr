@@ -108,7 +108,7 @@ const HabitFeed: React.FC = () => {
   }
   
   const Habit = ({name, description}: HabitProps) => {
-    let boxes = []
+    const boxes = []
     for (let i = 0; i < 365; i++) {
       boxes[i] = <div className="w-[12px] h-[12px] bg-zinc-200 hover:bg-zinc-400 hover:cursor-pointer overflow-hidden" />
     }
