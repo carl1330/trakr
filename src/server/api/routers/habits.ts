@@ -58,10 +58,10 @@ export const habitRouter = createTRPCRouter({
     completeHabit: protectedProcedure
     .input(z.string())
     .mutation(async ({ctx, input}) => {
-        const habitCompleted = await ctx.prisma.habit.update({
+        return await ctx.prisma.habit.update({
             data: {
                 completedDates: {
-                    push: new Date()
+                    push: new Date().toISOString().substring(0,10)
                 }
             },
             where: {

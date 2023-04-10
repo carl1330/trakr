@@ -117,11 +117,11 @@ const HabitFeed: React.FC = () => {
     });
 
     const HabitBox = (boxdate: {date: Date}) => {
-      function isInArray(value: Date, array: Date[]) {
-        return !!array.find(item => {return item.toISOString().substring(0,10) == value.toISOString().substring(0,10)})
+      function isInArray(value: String, array: String[]) {
+        return !!array.includes(value)
       }
 
-      if(isInArray(boxdate.date, props.habit.completedDates))
+      if(isInArray(boxdate.date.toISOString().substring(0,10), props.habit.completedDates))
         return (
         <Tooltip title={boxdate.date.toISOString().substring(0,10)} disableInteractive arrow>
           <div className="w-[12px] h-[12px] bg-violet-500 hover:bg-violet-600 hover:cursor-pointer overflow-hidden" />
