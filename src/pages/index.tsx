@@ -113,7 +113,7 @@ const HabitFeed: React.FC = () => {
     const boxes = []
     const habitStartDate = new Date(props.habit.createdAt);
     for (let i = 0; i < 365; i++) {
-      let boxdate = new Date(habitStartDate.getTime() + (24 * 60 * 60 * 1000) * i).toISOString().substring(0,10)
+      const boxdate = new Date(habitStartDate.getTime() + (24 * 60 * 60 * 1000) * i).toISOString().substring(0,10)
       boxes[i] = (
         <Tooltip title={boxdate} disableInteractive>
           <div className="w-[12px] h-[12px] bg-zinc-200 hover:bg-zinc-400 hover:cursor-pointer overflow-hidden" />
