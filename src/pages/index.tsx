@@ -104,7 +104,6 @@ const HabitFeed: React.FC = () => {
 
   type HabitFull = RouterOutputs["habit"]["getHabits"][0]
   const Habit = (props: {habit: HabitFull}) => {
-    let habitCompleted = false;
     const ctx = api.useContext();
     const { mutate: deleteHabit, isLoading: deleteLoading } = api.habit.deleteHabit.useMutation({
       onSuccess: () => {
@@ -116,11 +115,6 @@ const HabitFeed: React.FC = () => {
         void ctx.habit.getHabits.invalidate();
       },
     });
-    const {mutate: uncompleteHabit,  isLoading: uncompleteHabitLoading} = api.habit.uncompleteHabit.useMutation({
-      onSuccess: () => {
-        void ctx.habit.getHabits.invalidate();
-      },
-    })
 
     const HabitBox = (boxdate: {date: Date}) => {
       function isInArray(value: string, array: string[]) {
