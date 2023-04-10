@@ -3,8 +3,6 @@ import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import {FaRegPlusSquare, FaChartBar} from "react-icons/fa"
 import Link from "next/link";
-import { Menu } from "@headlessui/react";
-import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
 
