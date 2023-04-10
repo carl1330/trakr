@@ -13,6 +13,7 @@ import { Transition } from "@headlessui/react";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
+  const { data: sessionData } = useSession();
 
   return (
     <>
@@ -23,6 +24,7 @@ const Home: NextPage = () => {
       </Head>
       <main className="mx-96">
         <Navbar />
+        {sessionData ? <HabitFeed /> : <div>You should sign in</div>}
       </main>
     </>
   );
@@ -81,6 +83,46 @@ const Navbar: React.FC = () => {
     </div>
   )
 };
+
+const HabitFeed: React.FC = () => {
+  const { data: habits, isLoading } = api.habit.getHabits.useQuery();
+
+  if(isLoading) return (
+    <div className="flex flex-col items-center justify-center h-screen -mt-16">
+      <CircularProgress />
+    </div>
+  )
+
+  if(habits?.length == 0) 
+    return (
+      <div className="flex flex-col items-center justify-center h-screen -mt-16">
+        <p className="text-zinc-400 text-lg">You don't have any habits yet. Create one!</p>
+        <HabitModal />
+      </div>
+    )
+
+  interface HabitProps {
+    name: string;
+    description: string;
+  }
+  
+  const Habit = ({name, description}: HabitProps) => {
+    return (
+      <div>
+        <p>{name}</p>
+        <p>{description}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col justify-center items-center">
+        {habits?.map((habit) => (
+          <Habit name={habit.name} description={habit.description}/>
+        ))}
+    </div>
+  )
+}
 
 const HabitModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)

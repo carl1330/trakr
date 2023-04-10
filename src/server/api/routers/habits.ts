@@ -7,8 +7,13 @@ import {
 
 export const habitRouter = createTRPCRouter({
     getHabits: protectedProcedure
-    .query(( {ctx} ) => {
-        return ctx.session.user.id;
+    .query(async ( {ctx} ) => {
+        const habits = await ctx.prisma.habit.findMany({
+            where: {
+                userId: ctx.session.user.id
+            }
+        })
+        return habits;
     }),
     createHabit: protectedProcedure
     .input(z.object({
@@ -25,4 +30,12 @@ export const habitRouter = createTRPCRouter({
         })
         return habit;
     }),
+    getHabitCount: protectedProcedure
+    .query(async ( {ctx} ) => {
+        return await ctx.prisma.habit.count({
+            where: {
+                userId: ctx.session.user.id
+            }
+        })
+    })
 });
