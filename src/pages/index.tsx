@@ -1,8 +1,11 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
-import {FaRegPlusSquare, FaChartBar} from "react-icons/fa"
+import {FaRegPlusSquare, FaChartBar, FaUser, FaSignOutAlt} from "react-icons/fa"
 import Link from "next/link";
+import { CircularProgress } from "@mui/material";
+import { Menu } from "@headlessui/react";
+import Image from "next/image";
 
 const Home: NextPage = () => {
 
@@ -15,7 +18,6 @@ const Home: NextPage = () => {
       </Head>
       <main className="">
         <Navbar />
-        <AuthShowcase />
       </main>
     </>
   );
@@ -24,35 +26,56 @@ const Home: NextPage = () => {
 export default Home;
 
 const Navbar: React.FC = () => { 
+  const { data: sessionData } = useSession();
 
-  return (
-    <div className="flex flex-row justify-between">
-      <div className="font-bold">
-        trakr.
-      </div>
-      <div className="flex flex-row items-center gap-4">
+
+  const UserMenu = () => {
+    if(!sessionData) return <CircularProgress />;
+
+    return (
+      <Menu>
+        <Menu.Button>
+          <Image className="rounded-full" width={30} height={30} src={sessionData.user.image as string} alt={`${sessionData.user.name as string}'s profile picture`}></Image>
+        </Menu.Button>
+        <Menu.Items className="absolute flex flex-col mt-32 shadow-md rounded">
+          <button>
+            <div className="flex flex-row items-center gap-2 p-2">
+              <FaUser />
+              <p>Account</p>
+            </div>
+          </button>
+          <button onClick={() => void signOut()}>
+            <div className="flex flex-row items-center gap-2 p-2">
+              <FaSignOutAlt />
+              <p>Sign out</p>
+            </div>
+          </button>
+        </Menu.Items>
+      </Menu>
+    )
+  }
+
+  const UserOptions = () => {
+    return (
+      <div className="flex flex-row items-center gap-6">
         <button>
           <FaRegPlusSquare />
         </button>
         <Link href={"/stats"}>
           <FaChartBar />
         </Link>
+        <UserMenu />
       </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-row justify-between h-16 items-center px-4">
+      <div className="font-bold">
+        trakr.
+      </div>
+      {sessionData ? <UserOptions /> : <button onClick={() => void signIn()}>Sign in</button>}
     </div>
   )
 };
 
-const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-};
