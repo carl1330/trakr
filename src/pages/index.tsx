@@ -96,7 +96,7 @@ const HabitFeed: React.FC = () => {
   if(habits?.length == 0) 
     return (
       <div className="flex flex-col items-center justify-center h-screen -mt-16">
-        <p className="text-zinc-400 text-lg">You don't have any habits yet. Create one!</p>
+        <p className="text-zinc-400 text-lg">You don&apos;t have any habits yet. Create one!</p>
         <HabitModal />
       </div>
     )
