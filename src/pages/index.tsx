@@ -41,25 +41,25 @@ const Navbar: React.FC = () => {
     if(!sessionData) return <CircularProgress />;
 
     return (
-      <Menu>
-        <Menu.Button className="hover:opacity-90 transition-all">
-          <Image className="rounded-full" width={30} height={30} src={sessionData.user.image as string} alt={`${sessionData.user.name as string}'s profile picture`}></Image>
-        </Menu.Button>
-        <Menu.Items className="absolute flex flex-col mt-32 shadow-md rounded right-10 bg-white">
-          <button>
-            <div className="flex flex-row items-center gap-2 p-2 px-4 hover:bg-zinc-300 transition-all">
-              <FaUser />
-              <p>Account</p>
-            </div>
-          </button>
-          <button onClick={() => void signOut()}>
-            <div className="flex flex-row items-center gap-2 p-2 px-4 hover:bg-zinc-300 transition-all">
-              <FaSignOutAlt />
-              <p>Sign out</p>
-            </div>
-          </button>
-        </Menu.Items>
-      </Menu>
+        <Menu>
+          <Menu.Button className="hover:opacity-90 transition-all">
+            <Image className="rounded-full" width={30} height={30} src={sessionData.user.image as string} alt={`${sessionData.user.name as string}'s profile picture`}></Image>
+          </Menu.Button>
+          <Menu.Items className="absolute flex flex-col mt-32 shadow-md rounded right-10 bg-white">
+            <button>
+              <div className="flex flex-row items-center gap-2 p-2 px-4 hover:bg-zinc-300 transition-all">
+                <FaUser />
+                <p>Account</p>
+              </div>
+            </button>
+            <button onClick={() => void signOut()}>
+              <div className="flex flex-row items-center gap-2 p-2 px-4 hover:bg-zinc-300 transition-all">
+                <FaSignOutAlt />
+                <p>Sign out</p>
+              </div>
+            </button>
+          </Menu.Items>
+        </Menu>
     )
   }
 
@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-row justify-between h-16 items-center px-4">
+    <div className="flex flex-row justify-between h-16 items-center px-4 z-50">
       <div className="font-bold">
         trakr.
       </div>
@@ -162,14 +162,9 @@ const HabitFeed: React.FC = () => {
             </button>        
           </div>
           <div className="text-violet-50 flex flex-row gap-6">
-            { !habitCompleted ?
             <button onClick={() => completeHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
               {!completeHabitLoading ? <FaCheck /> : <CircularProgress size={20} color="secondary"/>}
-            </button> :
-            <button onClick={() => uncompleteHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
-              {!uncompleteHabitLoading ? <FaUndoAlt /> : <CircularProgress size={20} color="secondary"/>}
-            </button>
-            }
+            </button> 
             <button className="w-10 h-10 rounded flex justify-center items-center hover:bg-violet-600 transition-all">
               <FaPen />
             </button>
