@@ -105,19 +105,41 @@ const HabitFeed: React.FC = () => {
   type HabitFull = RouterOutputs["habit"]["getHabits"][0]
   const Habit = (props: {habit: HabitFull}) => {
     const ctx = api.useContext();
-    const { mutate: deleteHabit, isLoading } = api.habit.deleteHabit.useMutation({
+    const { mutate: deleteHabit, isLoading: deleteLoading } = api.habit.deleteHabit.useMutation({
       onSuccess: () => {
         void ctx.habit.getHabits.invalidate();
       }
     });
-    const boxes = []
-    const habitStartDate = new Date(props.habit.createdAt);
-    for (let i = 0; i < 365; i++) {
-      const boxdate = new Date(habitStartDate.getTime() + (24 * 60 * 60 * 1000) * i).toISOString().substring(0,10)
-      boxes[i] = (
-        <Tooltip title={boxdate} disableInteractive>
+    const {mutate: completeHabit,  isLoading: completeHabitLoading} = api.habit.completeHabit.useMutation({
+      onSuccess: () => {
+        void ctx.habit.getHabits.invalidate();
+      },
+    });
+
+    const HabitBox = (boxdate: {date: Date}) => {
+      function isInArray(value: Date, array: Date[]) {
+        return !!array.find(item => {return item.toISOString().substring(0,10) == value.toISOString().substring(0,10)})
+      }
+
+      if(isInArray(boxdate.date, props.habit.completedDates))
+        return (
+        <Tooltip title={boxdate.date.toISOString().substring(0,10)} disableInteractive arrow>
+          <div className="w-[12px] h-[12px] bg-violet-500 hover:bg-violet-600 hover:cursor-pointer overflow-hidden" />
+        </Tooltip>
+        )
+      return (
+        <Tooltip title={boxdate.date.toISOString().substring(0,10)} disableInteractive arrow>
           <div className="w-[12px] h-[12px] bg-zinc-200 hover:bg-zinc-400 hover:cursor-pointer overflow-hidden" />
         </Tooltip>
+      )
+    }
+    
+    const habitStartDate = new Date(props.habit.createdAt);
+    const boxes = [];
+    for (let i = 0; i < 365; i++) {
+      const boxdate = new Date(habitStartDate.getTime() + (24 * 60 * 60 * 1000) * i)
+      boxes[i] = (
+        <HabitBox key={boxdate.toISOString().substring(0,10)} date={boxdate}/>
       );
     }
 
@@ -129,18 +151,15 @@ const HabitFeed: React.FC = () => {
               <p className="text-xl font-bold text-violet-50">{props.habit.name}</p>
               <p className="text-violet-300">{props.habit.description}</p>
             </div>
-            {!isLoading ?
-            <button onClick={() => deleteHabit(props.habit.id)} className="self-start text-violet-900 hover:bg-violet-600 p-2 rounded">
-              <MdDelete />
-            </button> :
-            <CircularProgress size={20} color="secondary"/>
-            }
+            <button onClick={() => deleteHabit(props.habit.id)} className="self-start text-violet-900 hover:bg-violet-600 p-2 rounded flex justify-center items-center">
+              { !deleteLoading ? <MdDelete /> :  <CircularProgress size={20} color="secondary"/>}
+            </button>        
           </div>
           <div className="text-violet-50 flex flex-row gap-6">
-            <button className="p-2 rounded hover:bg-violet-600 transition-all">
-              <FaCheck />
+            <button onClick={() => completeHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
+              {!completeHabitLoading ? <FaCheck /> : <CircularProgress size={20} color="secondary"/>}
             </button>
-            <button className="p-2 rounded hover:bg-violet-600 transition-all">
+            <button className="w-10 h-10 rounded flex justify-center items-center hover:bg-violet-600 transition-all">
               <FaPen />
             </button>
           </div>

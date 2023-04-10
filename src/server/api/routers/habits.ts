@@ -13,7 +13,15 @@ export const habitRouter = createTRPCRouter({
                 userId: ctx.session.user.id
             }
         })
-        return habits;
+        return habits.map((habit) => {
+            return {
+                id: habit.id,
+                name: habit.name,
+                description: habit.description,
+                createdAt: habit.createdAt,
+                completedDates: habit.completedDates
+            }
+        });
     }),
     createHabit: protectedProcedure
     .input(z.object({
@@ -42,6 +50,20 @@ export const habitRouter = createTRPCRouter({
     .input(z.string())
     .mutation(async ({ctx, input}) => {
         return await ctx.prisma.habit.delete({
+            where: {
+                id: input,
+            },
+        })
+    }),
+    completeHabit: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ctx, input}) => {
+        const habitCompleted = await ctx.prisma.habit.update({
+            data: {
+                completedDates: {
+                    push: new Date()
+                }
+            },
             where: {
                 id: input,
             },
