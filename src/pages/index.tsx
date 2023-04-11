@@ -12,6 +12,9 @@ import { Fragment } from "react";
 import { Transition } from "@headlessui/react";
 import { api, RouterOutputs } from "~/utils/api";
 import { MdDelete } from "react-icons/md";
+  
+type HabitFull = RouterOutputs["habit"]["getHabits"][0]
+
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -102,7 +105,6 @@ const HabitFeed: React.FC = () => {
       </div>
     )
 
-  type HabitFull = RouterOutputs["habit"]["getHabits"][0]
   const Habit = (props: {habit: HabitFull}) => {
     const ctx = api.useContext();
     const { mutate: deleteHabit, isLoading: deleteLoading } = api.habit.deleteHabit.useMutation({
@@ -159,9 +161,7 @@ const HabitFeed: React.FC = () => {
             <button onClick={() => completeHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
               {!completeHabitLoading ? <FaCheck /> : <CircularProgress size={20} color="secondary"/>}
             </button> 
-            <button className="w-10 h-10 rounded flex justify-center items-center hover:bg-violet-600 transition-all">
-              <FaPen />
-            </button>
+            <EditHabitModal habit={props.habit}/>
           </div>
         </div>
         <div className="p-2 rounded-b">
@@ -275,4 +275,97 @@ const HabitModal: React.FC = () => {
 
   )
 }
+const EditHabitModal: React.FC<{habit: HabitFull}> = ({habit}) => {
+  const ctx = api.useContext();
+  const [isOpen, setIsOpen] = useState(false);
+  const [habitName, setHabitName] = useState(habit.name);
+  const [habitDescription, setHabitDescription] = useState(habit.description);
+  const {mutate: habitToEdit, isLoading} = api.habit.editHabit.useMutation({
+    onSuccess: () => {
+      void ctx.habit.getHabits.invalidate();
+      setIsOpen(false);
+    }
+  });
 
+  function editHabit() {
+    habitToEdit({
+      id: habit.id,
+      name: habitName,
+      description: habitDescription
+    })
+  }
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
+        <FaPen />
+      </button>
+
+
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={() => setIsOpen(false)}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+           <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Edit habit
+                  </Dialog.Title>
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-500">
+                      Habit name
+                    </p>
+                    <input defaultValue={habit.name} onChange={(e) => setHabitName(e.target.value)} className="outline-none" placeholder="An awesome habit!" />
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-500">
+                      Habit description
+                    </p>
+                    <textarea defaultValue={habit.description} onChange={(e) => setHabitDescription(e.target.value)} draggable={false} className="outline-none w-full h-24 resize-none" placeholder="An awesome habit!" />
+                  </div>
+                  <div className="mt-4">
+                    {!isLoading ?
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-violet-800 px-4 py-2 text-sm font-medium text-white hover:bg-violet-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
+                      onClick={() => {editHabit()}}
+                    >
+                      Apply
+                    </button> :
+                    <div className="inline-flex justify-center rounded-md border border-transparent bg-violet-800 px-4 py-2 text-sm font-medium text-white hover:bg-violet-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2">
+                      <CircularProgress color="inherit" size={20}/>
+                    </div> }
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
+
+  )
+}

@@ -38,6 +38,24 @@ export const habitRouter = createTRPCRouter({
         })
         return habit;
     }),
+    editHabit: protectedProcedure
+    .input(z.object({
+        id: z.string(),
+        name: z.string(),
+        description: z.string(),
+    }))
+    .mutation(async ({ctx, input}) => {
+        const habit = await ctx.prisma.habit.update({
+            data: {
+                name: input.name,
+                description: input.description,
+            },
+            where: {
+                id: input.id,
+            },
+        })
+        return habit;
+    }),
     getHabitCount: protectedProcedure
     .query(async ( {ctx} ) => {
         return await ctx.prisma.habit.count({
