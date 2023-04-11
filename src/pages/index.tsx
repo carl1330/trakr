@@ -153,14 +153,18 @@ const HabitFeed: React.FC = () => {
               <p className="text-xl font-bold text-violet-50">{props.habit.name}</p>
               <p className="text-violet-300">{props.habit.description}</p>
             </div>
-            <button onClick={() => deleteHabit(props.habit.id)} className="self-start text-violet-900 hover:bg-violet-600 p-2 rounded flex justify-center items-center">
-              { !deleteLoading ? <MdDelete /> :  <CircularProgress size={20} color="secondary"/>}
-            </button>        
+            <Tooltip title="Delete habit" enterDelay={400} enterNextDelay={400} disableInteractive arrow>
+              <button onClick={() => deleteHabit(props.habit.id)} className="self-start text-violet-900 hover:bg-violet-600 p-2 rounded flex justify-center items-center">
+                { !deleteLoading ? <MdDelete /> :  <CircularProgress size={20} color="secondary"/>}
+              </button>      
+            </Tooltip>
           </div>
           <div className="text-violet-50 flex flex-row gap-6">
-            <button onClick={() => completeHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
-              {!completeHabitLoading ? <FaCheck /> : <CircularProgress size={20} color="secondary"/>}
-            </button> 
+            <Tooltip title="Mark as completed" enterNextDelay={400} disableInteractive arrow>
+              <button onClick={() => completeHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
+                {!completeHabitLoading ? <FaCheck /> : <CircularProgress size={20} color="secondary"/>}
+              </button> 
+            </Tooltip>
             <EditHabitModal habit={props.habit}/>
           </div>
         </div>
@@ -297,9 +301,11 @@ const EditHabitModal: React.FC<{habit: HabitFull}> = ({habit}) => {
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
-        <FaPen />
-      </button>
+      <Tooltip title="Edit habit" enterDelay={400} enterNextDelay={400} disableInteractive arrow>
+        <button onClick={() => setIsOpen(true)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
+          <FaPen />
+        </button>
+      </Tooltip>
 
 
       <Transition appear show={isOpen} as={Fragment}>
