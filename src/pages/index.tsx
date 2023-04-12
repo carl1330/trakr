@@ -107,7 +107,7 @@ const HabitFeed: React.FC = () => {
 
   const Habit = (props: {habit: HabitFull}) => {
     const ctx = api.useContext();
-    const [habitCompleted, setHabitCompleted] = useState(false);
+    const [habitCompleted, setHabitCompleted] = useState(props.habit.completedDates.includes(new Date().toISOString().substring(0,10)));
     const { mutate: deleteHabit, isLoading: deleteLoading } = api.habit.deleteHabit.useMutation({
       onSuccess: () => {
         void ctx.habit.getHabits.invalidate();
