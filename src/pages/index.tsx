@@ -7,7 +7,7 @@ import { CircularProgress, Tooltip } from "@mui/material";
 import { Menu } from "@headlessui/react";
 import Image from "next/image";
 import { Dialog } from '@headlessui/react'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Fragment } from "react";
 import { Transition } from "@headlessui/react";
 import { api, RouterOutputs } from "~/utils/api";
@@ -107,6 +107,7 @@ const HabitFeed: React.FC = () => {
 
   const Habit = (props: {habit: HabitFull}) => {
     const ctx = api.useContext();
+    const [habitCompleted, setHabitCompleted] = useState(false);
     const { mutate: deleteHabit, isLoading: deleteLoading } = api.habit.deleteHabit.useMutation({
       onSuccess: () => {
         void ctx.habit.getHabits.invalidate();
@@ -117,6 +118,15 @@ const HabitFeed: React.FC = () => {
         void ctx.habit.getHabits.invalidate();
       },
     });
+    const {mutate: uncompleteHabit,  isLoading: uncompleteHabitLoading} = api.habit.uncompleteHabit.useMutation({
+      onSuccess: () => {
+        void ctx.habit.getHabits.invalidate();
+      },
+    });
+
+    useEffect(() => {
+      if(props.habit.completedDates.includes(new Date().toISOString().substring(0,10))) setHabitCompleted(true);
+    },[props.habit.completedDates])
 
     const HabitBox = (boxdate: {date: Date}) => {
       function isInArray(value: string, array: string[]) {
@@ -160,11 +170,18 @@ const HabitFeed: React.FC = () => {
             </Tooltip>
           </div>
           <div className="text-violet-50 flex flex-row gap-6">
+            { !habitCompleted ?
             <Tooltip title="Mark as completed" enterNextDelay={400} disableInteractive arrow>
               <button onClick={() => completeHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
                 {!completeHabitLoading ? <FaCheck /> : <CircularProgress size={20} color="secondary"/>}
               </button> 
-            </Tooltip>
+            </Tooltip> :
+            <Tooltip title="Mark as incomplete" enterNextDelay={400} disableInteractive arrow>
+             <button onClick={() => uncompleteHabit(props.habit.id)} className="w-10 h-10 flex justify-center items-center rounded hover:bg-violet-600 transition-all">
+               {!uncompleteHabitLoading ? <FaUndoAlt /> : <CircularProgress size={20} color="secondary"/>}
+             </button> 
+           </Tooltip> 
+            }
             <EditHabitModal habit={props.habit}/>
           </div>
         </div>
