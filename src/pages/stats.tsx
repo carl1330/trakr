@@ -23,7 +23,7 @@ export default function Stats() {
         return longestStreak;
     }
 
-    function getEarliestHabit(habits: HabitFull[]): String {
+    function getEarliestHabit(habits: HabitFull[]): string {
         let earliestHabit = new Date();
         habits.forEach((habit) => {
             if (new Date(habit.createdAt)< earliestHabit) {
