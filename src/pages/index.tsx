@@ -36,7 +36,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const Navbar: React.FC = () => { 
+export const Navbar: React.FC = () => { 
   const { data: sessionData } = useSession();
 
 
@@ -80,9 +80,9 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="flex flex-row justify-between h-16 items-center px-4 z-50">
-      <div className="font-bold">
+      <Link href={"/"} className="font-bold">
         trakr.
-      </div>
+      </Link>
       {sessionData ? <UserOptions /> : <button className="flex flex-row items-center gap-2 rounded p-2 hover:bg-zinc-300 transition-all" onClick={() => void signIn()}><FaSignInAlt /> Sign in</button>}
     </div>
   )
