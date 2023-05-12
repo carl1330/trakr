@@ -10,9 +10,10 @@ import { Dialog } from '@headlessui/react'
 import { useEffect, useState } from "react";
 import { Fragment } from "react";
 import { Transition } from "@headlessui/react";
-import { api, RouterOutputs } from "~/utils/api";
+import { api } from "~/utils/api";
 import { MdDelete } from "react-icons/md";
-  
+import type { RouterOutputs } from "~/utils/api";  
+
 type HabitFull = RouterOutputs["habit"]["getHabits"][0]
 
 
@@ -186,7 +187,7 @@ const HabitFeed: React.FC = () => {
           </div>
         </div>
         <div className="p-2 rounded-b">
-          <div className="grid gap-[4px] grid-rows-6 grid-flow-col">
+          <div className="grid gap-[4px] grid-rows-7 grid-flow-col">
             {boxes}
           </div>
         </div>
