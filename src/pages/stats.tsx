@@ -35,25 +35,28 @@ export default function Stats() {
 
 
     return (
-        <div className="flex flex-col justify-center">
-            <Navbar />
-            <div className="flex flex-col items-center">
-                <h1 className="text-2xl">Statistics for {sessionData.user.name}</h1>
-                <div className="flex flex-row gap-4 mt-4">
-                    <div className="flex flex-col items-center">
-                        <h2 className="text-xl">Total habits</h2>
-                        <p>{isLoading ? <CircularProgress /> : stats}</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h2 className="text-xl">Longest streak</h2>
-                        <p>{isLoading ? <CircularProgress /> : getLongestStreak(habits as HabitFull[])}</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h2 className="text-xl">Started tracking</h2>
-                        <p>{isLoading ? <CircularProgress /> : getEarliestHabit(habits as HabitFull[])}</p>
+        <main>
+            <div className="flex flex-col justify-center">
+                <Navbar />
+                <div className="flex flex-col items-center">
+                    <h1 className="text-2xl">Statistics for {sessionData.user.name}</h1>
+                    <div className="flex flex-row gap-4 mt-4">
+                        <div className="flex flex-col items-center">
+                            <h2 className="text-xl">Total habits</h2>
+                            <p>{isLoading ? <CircularProgress /> : stats}</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <h2 className="text-xl">Longest streak</h2>
+                            <p>{isLoading ? <CircularProgress /> : getLongestStreak(habits as HabitFull[])}</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <h2 className="text-xl">Started tracking</h2>
+                            <p>{isLoading ? <CircularProgress /> : getEarliestHabit(habits as HabitFull[])}</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
+ 
     )
 }

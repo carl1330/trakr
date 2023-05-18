@@ -80,7 +80,7 @@ export const Navbar: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-row justify-between h-16 items-center px-4 z-50">
+    <div className="flex flex-row justify-between h-16 items-center z-50">
       <Link href={"/"} className="font-bold">
         trakr.
       </Link>
@@ -157,7 +157,7 @@ const HabitFeed: React.FC = () => {
     }
 
     return (
-      <div className="flex flex-col shadow-md">
+      <div className="flex flex-col shadow-md w-full">
         <div className="flex flex-col gap-2 h-1/2 bg-violet-500 p-2 rounded-t">
           <div className="flex flex-row justify-between">
             <div>
@@ -186,7 +186,7 @@ const HabitFeed: React.FC = () => {
             <EditHabitModal habit={props.habit}/>
           </div>
         </div>
-        <div className="p-2 rounded-b">
+        <div className="p-2 rounded-b overflow-x-auto">
           <div className="grid gap-[4px] grid-rows-7 grid-flow-col">
             {boxes}
           </div>
